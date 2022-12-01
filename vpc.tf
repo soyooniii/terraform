@@ -129,6 +129,14 @@ resource "aws_security_group" "terraform-app-sg" {
     cidr_blocks      = ["10.1.1.0/24"]
   }
 
+  ingress {
+    description      = "web application"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -138,5 +146,31 @@ resource "aws_security_group" "terraform-app-sg" {
 
   tags = {
     Name = "terraform-app-sg"
+  }
+}
+
+
+resource "aws_security_group" "terraform-db-sg" {
+  name        = "terraform-db-sg"
+  description = "only db sg"
+  vpc_id      = aws_vpc.terraform-vpc.id
+
+  ingress {
+    description      = "SSH"
+    from_port        = 3306
+    to_port          = 3306
+    protocol         = "tcp"
+    cidr_blocks      = ["10.1.1.0/24"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "terraform-db-sg"
   }
 }
